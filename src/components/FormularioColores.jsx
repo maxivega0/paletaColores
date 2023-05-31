@@ -40,7 +40,7 @@ const FormularioColores = () => {
           </Button>
         </Form.Group>
       </Form>
-      <ItemColor></ItemColor>
+      <ItemColor colores={colores}></ItemColor>
       </>
     );
 };
