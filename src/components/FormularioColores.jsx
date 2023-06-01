@@ -1,48 +1,53 @@
-import { useState, useEffect } from "react";
-import { Form, Button } from "react-bootstrap";
+import { useEffect, useState } from "react";
+import { Form, Button, Container } from "react-bootstrap";
 import ItemColor from "./ItemColor";
 
+const FormularioColor = () => {
+  const coloresLocalStorage = JSON.parse(localStorage.getItem('listaColores')) || [];
+  const [color, setColor] = useState("");
+  const [colores, setColores] = useState(coloresLocalStorage)
+  
+  useEffect(() => {
+    localStorage.setItem('listaColores', JSON.stringify(colores))
+  }, [colores])
 
-const FormularioColores = () => {
-    // const coloresDelLocalStorage = JSON.parse(localStorage.getItem("listaColores") || []);
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    setColores([...colores, color]);
+    setColor("");
+  }
+  
+  const borrarColor = (nombreColor) =>{
+    let copiaColores = colores.filter((itemColor) => itemColor !== nombreColor);
+    setColores(copiaColores);
+  }
 
-    const [color, setColor] = useState("");
-    // Array de tareas
-    const [colores, setColores] = useState([]);
-
-    useEffect(()=>{
-        // Cuando el comopoennte se ha montado, actualiza el local storage
-        localStorage.setItem("listaColores", JSON.stringify(colores))
-        // console.log("Aqui deberia guardar en local storage");
-      },[colores])
-
-
-    const handleSubmit = (e) => {
-        e.preventDefault();
-        setColores([...colores, color]);
-        //* Limpiar el imput
-        setColor("");
-      };
-
-    return (
-        <>
-       
-        <Form onSubmit={handleSubmit}>
-        <Form.Group className="mb-3 d-flex" controlId="color">
+  return (
+    <>
+      <Form onSubmit={handleSubmit} className="bloqueFormulario">
+        <Form.Group className="mb-3 d-flex flex-column" controlId="tarea">
           <Form.Control
             type="text"
-            placeholder="Ingrese un color, ej: 'Red'"
+            placeholder="Ingrese una color"
             onChange={(e) => setColor(e.target.value)}
             value={color}
           />
+
+          <Container className="my-3 text-center">
           <Button variant="primary" type="submit">
-            Agregar
+            Guardar
           </Button>
+          </Container>
+  
         </Form.Group>
       </Form>
-      <ItemColor colores={colores}></ItemColor>
-      </>
-    );
+
+      <Container className="d-flex row justify-content-center">
+        <ItemColor colores={colores} borrarColor={borrarColor}></ItemColor>
+      </Container>
+      
+    </>
+  );
 };
 
-export default FormularioColores;
+export default FormularioColor;
